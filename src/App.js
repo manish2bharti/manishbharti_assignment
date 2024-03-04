@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Provider, useSelector } from "react-redux";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import HomeScreen from "./components/HomeScreen";
+import LoginScreen from "./components/LoginScreen";
+import PrivateRoute from "./components/PrivateRoute";
+import ProfileScreen from "./components/ProfileScreen";
+import store from "./store";
 
-function App() {
+const App = () => {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <Router>
+        <Switch>
+          <Route path="/login" component={LoginScreen} />
+          <PrivateRoute
+            path="/home"
+            component={HomeScreen}
+            isLoggedIn={isLoggedIn}
+          />
+          <PrivateRoute
+            path="/profile/:index"
+            component={ProfileScreen}
+            isLoggedIn={isLoggedIn}
+          />
+          <Route path="/" component={LoginScreen} />
+        </Switch>
+      </Router>
+    </Provider>
   );
-}
+};
 
 export default App;
